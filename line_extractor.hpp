@@ -18,78 +18,28 @@ using namespace cv;
 using namespace std;
 
 /* Struct holding the parameters for one camera */
-struct CalibParams {
-    string name;
-    double fu;
-    double fv;
-    double cu;
-    double cv;
-    double dist_coeffs_0;
-    double dist_coeffs_1;
-    double dist_coeffs_2;
-    double dist_coeffs_3;
-    double camera_x;
-    double camera_y;
-    double camera_z;
-    double pitch;
-    double yaw;
-    double roll;
-};
+struct CalibParams
 
 
 /* Struct for all four cameras */
-struct camera_set {
-    CalibParams* front;
-    CalibParams* rear;
-    CalibParams* left;
-    CalibParams* right;
-};
+struct camera_set
 
 
 /* Struct for lanemarks */
-struct lanemarks {
-    Vec4f rising_edge;
-    Vec4f falling_edge;
-};
+struct lanemarks
 
+    
+struct one_frame_lines
 
-struct one_frame_lines {
-    vector<lanemarks> front_lanes;
-    vector<lanemarks> front_stop_lines;
-    vector<lanemarks> rear_lanes;
-    vector<lanemarks> rear_stop_lines;
-    vector<lanemarks> left_lanes;
-    vector<lanemarks> right_lanes;
-    uint64_t timestamp;
-};
+struct one_frame_lines_set
 
-
-struct one_frame_lines_set {
-    one_frame_lines* orig_lines;
-    one_frame_lines* pre_filtered_lines;
-    one_frame_lines* filtered_lines;
-    one_frame_lines* front_back_cpy_lines;
-    one_frame_lines* front_back_crl_lines;
-    one_frame_lines* side_cpy_lines;
-    one_frame_lines* side_csp_lines;
-    one_frame_lines* final_lines;
-};
-
-struct vanishing_pts {
-    Point2f front_vp;
-    Point2f rear_vp;
-    Point2f left_vp;
-    Point2f right_vp;
-};
+struct vanishing_pts
 
 
 /* create a new CalibParams struct and initialize it
  * Parameters see definition for CalibParams
  */
-CalibParams* camera_new(string name, double fu, double fv, double cu, double cv,
-                        double dis_coeff_0, double dis_coeff_1,
-                        double dis_coeff_2, double dis_coeff_3,
-                        double camera_x, double camera_y, double camera_z);
+CalibParams* camera_new;
 
 one_frame_lines_set* one_frame_set_new();
 
@@ -99,7 +49,7 @@ one_frame_lines_set* one_frame_set_new();
  * cam_matrix: a pointer holding the return val&ue of the camera matrix
  * dist_coeffs: a pointer holding the return value of the distortion coefficients
  */
-void init_intrinsic(CalibParams* camera, Mat* cam_matrix, Mat* dist_coeffs);
+void init_intrinsic;
 
 
 /* Calculate the rotation matrix R based on a camera's pitch, yaw, and roll angles
@@ -107,7 +57,7 @@ void init_intrinsic(CalibParams* camera, Mat* cam_matrix, Mat* dist_coeffs);
  * camera: a pointer to CalibParams holding the parameters of the camera
  * R: a pointer holding the return value of the rotation matrix
  */
-void rotation_homography(CalibParams* camera, Mat* R);
+void rotation_homography;
 
 
 /* Calculate the translation matrix R based on the rotation matrix
@@ -117,16 +67,16 @@ void rotation_homography(CalibParams* camera, Mat* R);
  * R: a pointer holding the return value of the rotation matrix
  * T: a pointer holding the return value of the translation matrix
  */
-void translation_homography(CalibParams* camera, Mat* R, Mat* T);
+void translation_homography;
 
-void ENURotationFromEuler(double roll_degree, double pitch_degree, double yaw_degree, cv::Mat* rot_mat);
+void ENURotationFromEuler;
 
 /* Adjust the orientation of the rotation and translation matrix from zyx to yxz
  *
  * R: a pointer to the rotation matrix
  * T: a pointer to the translation matrix
  */
-void homography_adjust(Mat* R, Mat* T);
+void homography_adjust;
 
 
 //RANSAC fit 2D straight line
@@ -154,7 +104,7 @@ void homography_adjust(Mat* R, Mat* T);
  *
  * birdeye_img: a pointer to the birdeye image
  */
-void detect_line(Mat* birdeye_img, vector<Vec4f>* lines, vector<lanemarks>* pairs);
+void detect_line;
 
 
 /* transorm one fisheye image into a birdeye image with the camera parameters
@@ -162,20 +112,19 @@ void detect_line(Mat* birdeye_img, vector<Vec4f>* lines, vector<lanemarks>* pair
  * camera: a pointer to CalibParams holding the parameters of the camera
  * img: a pointer to the fisheye image
  */
-void birdeye_oneview_transform(Mat* img, Mat* birdeye_oneview, CalibParams* camera, Point2f* lu, Point2f* rb);
+void birdeye_oneview_transform;
 
 
-void oneview_extract_line(Mat* img, Mat* birdeye_img, CalibParams* camera, one_frame_lines_set* res, vanishing_pts* v_pts);
+void oneview_extract_line;
 
 /* transform all four fisheye images with four cameras' parameters
  *
  * cameras: a pointer to camera_set struct holding parameters of all four cameras
  * all_img: a pointer to all four fisheye images
  */
-void birdeye_transform(Mat* all_img, camera_set* cameras, vector<one_frame_lines_set>* multi_frame_set, vector<vanishing_pts>* vanishing_pts_set);
+void birdeye_transform;
 
-
-void line_pairing(vector<Vec4f>* lines, vector<lanemarks>* pairs);
+void line_pairing;
 
 //RANSAC fit 2D straight line
 //Input parameters: points--input point set
@@ -190,85 +139,78 @@ void line_pairing(vector<Vec4f>* lines, vector<lanemarks>* pairs);
 //              vector collinear to the line and (x0, y0) is some
 //              point on the line.
 //Return value: none
-void fitLineRansac(const std::vector<cv::Point2f>& points,
-                  cv::Vec4f &line,
-                  int iterations = 1000,
-                  double sigma = 1.,
-                  double k_min = -7.,
-                   double k_max = 7.);
+void fitLineRansac;
 
-
-static float GetDist(float x1, float y1, float x2, float y2);
+static float GetDist;
 
 // get angle with positive vale between 2 line segments
-static float GetAngle(float x1, float y1, float x2, float y2);
+static float GetAngle;
 
 // get angle with positive value between input line and iamge x axis
-static float GetAngle(Vec4f& line);
+static float GetAngle;
 
-static float GetX(Vec4f& line, float y);
+static float GetX;
 
 // determine whether 2 lines is colinear
-static float GetSimilarity(Vec4f& l1, Vec4f& l2);
+static float GetSimilarity;
 
-static void Kmeans(const std::vector<std::pair<int, float>>& sample, int k,
-                   std::vector<std::vector<std::pair<int, float>>>* res);
+static void Kmeans;
 
-void FilterLines(vector<lanemarks>& lines, CalibParams* camera, one_frame_lines* res, one_frame_lines* pre_filtered);
+void FilterLines;
 
-void duplicate_filter(vector<Vec4f>* lines);
+void duplicate_filter;
 
-void length_filter(vector<Vec4f>* lines);
+void length_filter;
 
-void range_filter(vector<Vec4f>* lines);
+void range_filter;
 
-void orientation_filter(vector<Vec4f>* lines);
+void orientation_filter;
 
-void average_vanish_pt(vector<Point2f>* v_pts, Point2f* averaged_pt);
+void average_vanish_pt;
 
-void get_vanish_pt(CalibParams* camera, Point2f* vanishing_pt, one_frame_lines* res);
+void get_vanish_pt;
 
-double get_pitch(CalibParams* camera, Point2f* vanishing_pt);
+double get_pitch;
 
-void get_Hmax(CalibParams* camera, one_frame_lines* res, Mat* Hmax, vanishing_pts* v_pts);
+void get_Hmax;
 
-void side_cam_Hmax(CalibParams* camera, one_frame_lines* res, Mat* Hmax, vanishing_pts* v_pts);
+void side_cam_Hmax;
 
-void front_back_cam_Hmax(CalibParams* camera, one_frame_lines* res, Mat* Hmax, vanishing_pts* v_pts);
+void front_back_cam_Hmax;
 
-void get_h(Point2f* vanish_pt, Mat* H);
+void get_h;
 
-void get_h(Mat* R, Mat* H);
+void get_h;
 
-void get_h(double vx, double vy, const double vz, Mat* H);
+void get_h;
 
-void calculate_H(Mat* R, Mat* K, Mat* H);
+void calculate_H;
 
-void get_virtual_K(Mat* K);
+void get_virtual_K;
 
-void get_updated_R(Mat* u, double theta, Mat* R);
+void get_updated_R;
 
-double get_rotation_axis_and_angle(Mat* u, Mat* vanish_pt);
+double get_rotation_axis_and_angle;
 
-void outlier_filter(CalibParams* camera, one_frame_lines* tmp_res, Mat* Hmax, one_frame_lines* new_res);
+void outlier_filter;
 
-float get_slope(float x1, float y1, float x2, float y2);
+float get_slope;
 
-float get_intercept(float y, float x, float m);
+float get_intercept;
 
-float get_x(float y, float y_coeff, float m, float b);
+float get_x;
 
-bool location_check(lanemarks* lane, const double center_axis);
+bool location_check;
 
-void find_closest_lane(vector<lanemarks>* lanes, bool left_side, lanemarks* cloest_lane);
+void find_closest_lane;
 
-bool cluter_filter(Point2f p1, Point2f p2);
+bool cluter_filter;
 
-void get_cluster_median(vector<int>* cluster_indices, int cluster_num, vector<Point2f>* pts, Point2f* final_pt);
+void get_cluster_median;
 
-void cluster_vpt_set(vector<vanishing_pts>* vanish_pts, vanishing_pts* final_v_pts);
+void cluster_vpt_set;
 
-void lanes_filter(CalibParams* camera, one_frame_lines* res, one_frame_lines* pre_filtered, double center_axis);
+void lanes_filter;
 
 #endif /* line_extractor_hpp */
 
