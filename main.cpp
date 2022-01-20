@@ -7,7 +7,7 @@
 using namespace cv;
 using namespace std;
 
-void birdeye_transform(Mat* all_img, camera_set* cameras, vector<one_frame_lines_set>* multi_frame_set, vector<vanishing_pts>* vanishing_pts_set)
+void birdeye_transform()
 {
 }
 
